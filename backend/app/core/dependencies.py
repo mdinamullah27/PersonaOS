@@ -3,9 +3,8 @@
 Provides reusable dependencies for FastAPI route injection.
 """
 
-from typing import Annotated
 
-from fastapi import Depends, Header, Query, Request
+from fastapi import Header, Query, Request
 from pydantic import BaseModel, Field
 
 from app.core.constants import PaginationDefaults

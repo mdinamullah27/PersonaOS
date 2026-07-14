@@ -3,7 +3,6 @@
 Defines the User model for database storage.
 """
 
-import uuid
 
 from sqlalchemy import Boolean, Enum, String
 from sqlalchemy.orm import Mapped, mapped_column
@@ -57,7 +56,7 @@ class User(BaseModel):
     )
     role: Mapped[UserRole] = mapped_column(
         Enum(UserRole, native_enum=False),
-        default=UserRole.MEMBER,
+        default=UserRole.USER,
         nullable=False,
         comment="User role",
     )

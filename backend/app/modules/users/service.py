@@ -6,7 +6,6 @@ This is a placeholder for Phase 2 implementation.
 
 from typing import Any
 
-from app.core.constants import PaginationDefaults
 from app.modules.users.repository import UserRepository
 from app.modules.users.schemas import UserCreate, UserUpdate
 

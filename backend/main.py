@@ -3,8 +3,11 @@
 Enterprise backend for AI-powered digital twin management.
 """
 
+from typing import Any
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 
 from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
@@ -17,6 +20,12 @@ from app.core.middleware import (
 )
 
 settings = get_settings()
+
+# OAuth2 scheme for Swagger UI login flow
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_PREFIX}/auth/login",
+    auto_error=False,
+)
 
 
 def create_app() -> FastAPI:
@@ -56,6 +65,58 @@ def create_app() -> FastAPI:
     # Register Routers
     _register_routers(app)
 
+    # Custom OpenAPI schema with OAuth2 login flow for Swagger UI
+    def custom_openapi() -> dict[str, Any]:
+        if app.openapi_schema:
+            return app.openapi_schema
+        from fastapi.openapi.utils import get_openapi
+
+        openapi_schema = get_openapi(
+            title=settings.APP_NAME,
+            version=settings.APP_VERSION,
+            description=settings.APP_DESCRIPTION,
+            routes=app.routes,
+        )
+
+        # Add OAuth2 security scheme
+        openapi_schema["components"] = openapi_schema.get("components", {})
+        openapi_schema["components"]["securitySchemes"] = {
+            "OAuth2PasswordBearer": {
+                "type": "oauth2",
+                "flows": {
+                    "password": {
+                        "tokenUrl": f"{settings.API_V1_PREFIX}/auth/login",
+                        "scopes": {},
+                    }
+                },
+                "description": "Login with email and password to get a JWT token.",
+            }
+        }
+
+        # Apply security globally
+        openapi_schema["security"] = [{"OAuth2PasswordBearer": []}]
+
+        # Exempt auth endpoints from security requirements
+        exempt_paths = {
+            "/api/v1/auth/login",
+            "/health",
+            "/ready",
+            "/version",
+            "/docs",
+            "/redoc",
+            "/openapi.json",
+        }
+
+        for path, methods in openapi_schema.get("paths", {}).items():
+            for method in methods.values():
+                if isinstance(method, dict) and path in exempt_paths:
+                    method["security"] = []
+
+        app.openapi_schema = openapi_schema
+        return app.openapi_schema
+
+    app.openapi = custom_openapi  # type: ignore[method-assign]
+
     return app
 
 
@@ -67,14 +128,12 @@ def _register_routers(app: FastAPI) -> None:
     """
     from app.api.v1.health import router as health_router
     from app.modules.auth.router import router as auth_router
-    from app.modules.users.router import router as users_router
 
     # Health endpoints (no prefix)
     app.include_router(health_router)
 
     # API v1 routers
     app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
-    app.include_router(users_router, prefix=settings.API_V1_PREFIX)
 
 
 app = create_app()

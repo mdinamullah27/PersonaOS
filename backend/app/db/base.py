@@ -4,11 +4,7 @@ Provides the base model class with common mixins for UUID primary keys,
 timestamps, and soft delete functionality.
 """
 
-import uuid
-from datetime import UTC, datetime
 
-from sqlalchemy import DateTime
-from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.mixins import Base, SoftDeleteMixin, TimestampMixin, UUIDPrimaryKeyMixin
 

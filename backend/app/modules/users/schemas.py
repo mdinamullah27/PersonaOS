@@ -4,7 +4,6 @@ Pydantic models for user requests and responses.
 """
 
 from datetime import datetime
-from typing import Any
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -23,7 +22,7 @@ class UserCreate(UserBase):
     """Schema for creating a user."""
 
     password: str = Field(..., min_length=8, max_length=128, description="Password")
-    role: UserRole = Field(default=UserRole.MEMBER, description="User role")
+    role: UserRole = Field(default=UserRole.USER, description="User role")
 
 
 class UserUpdate(BaseModel):

@@ -8,7 +8,6 @@ from datetime import UTC, datetime
 
 import pytest
 
-from app.core.constants import UserRole
 from app.modules.users.models import User
 
 

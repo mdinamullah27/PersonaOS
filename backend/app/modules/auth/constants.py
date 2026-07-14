@@ -3,8 +3,6 @@
 Defines authentication-related constants and configurations.
 """
 
-from datetime import timedelta
-
 # Token configuration
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7

@@ -65,6 +65,10 @@ class Settings(BaseSettings):
     LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     LOG_FORMAT: Literal["json", "console"] = "console"
 
+    # Superuser (seeded on first startup)
+    SUPERUSER_EMAIL: str = Field(default="admin@personaos.com", description="Superuser email")
+    SUPERUSER_PASSWORD: str = Field(default="superuser123", description="Superuser password")
+
     @property
     def is_production(self) -> bool:
         """Check if running in production environment."""

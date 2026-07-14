@@ -82,7 +82,7 @@ class SoftDeleteMixin:
 
     def soft_delete(self) -> None:
         """Mark the record as deleted."""
-        from datetime import UTC, datetime
+        from datetime import datetime
 
         self.is_deleted = True
         self.deleted_at = datetime.now(UTC)

@@ -5,7 +5,6 @@ Centralizes all constant values used across the application.
 
 from enum import Enum
 
-
 # Application
 APP_TITLE = "PersonaOS"
 APP_DESCRIPTION = "AI Digital Twin Platform"
@@ -22,11 +21,9 @@ class Environment(str, Enum):
 class UserRole(str, Enum):
     """User role definitions for RBAC."""
 
-    SUPER_ADMIN = "super_admin"
+    SUPERUSER = "superuser"
     ADMIN = "admin"
-    MANAGER = "manager"
-    MEMBER = "member"
-    VIEWER = "viewer"
+    USER = "user"
 
 
 class Permission(str, Enum):
@@ -65,7 +62,7 @@ class Permission(str, Enum):
 
 # Role-Permission mapping
 ROLE_PERMISSIONS: dict[UserRole, list[Permission]] = {
-    UserRole.SUPER_ADMIN: list(Permission),  # All permissions
+    UserRole.SUPERUSER: list(Permission),  # All permissions
     UserRole.ADMIN: [
         Permission.USER_CREATE,
         Permission.USER_READ,
@@ -84,31 +81,14 @@ ROLE_PERMISSIONS: dict[UserRole, list[Permission]] = {
         Permission.CHAT_UPDATE,
         Permission.CHAT_DELETE,
         Permission.ANALYTICS_READ,
+        Permission.ADMIN_PANEL,
     ],
-    UserRole.MANAGER: [
-        Permission.USER_READ,
-        Permission.WORKSPACE_READ,
-        Permission.WORKSPACE_UPDATE,
-        Permission.DOCUMENT_CREATE,
-        Permission.DOCUMENT_READ,
-        Permission.DOCUMENT_UPDATE,
-        Permission.DOCUMENT_DELETE,
-        Permission.CHAT_CREATE,
-        Permission.CHAT_READ,
-        Permission.CHAT_UPDATE,
-        Permission.ANALYTICS_READ,
-    ],
-    UserRole.MEMBER: [
+    UserRole.USER: [
         Permission.WORKSPACE_READ,
         Permission.DOCUMENT_CREATE,
         Permission.DOCUMENT_READ,
         Permission.DOCUMENT_UPDATE,
         Permission.CHAT_CREATE,
-        Permission.CHAT_READ,
-    ],
-    UserRole.VIEWER: [
-        Permission.WORKSPACE_READ,
-        Permission.DOCUMENT_READ,
         Permission.CHAT_READ,
     ],
 }

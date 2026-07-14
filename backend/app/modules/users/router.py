@@ -5,10 +5,9 @@ Handles user management endpoints.
 
 from fastapi import APIRouter, Depends, Query
 
-from app.core.constants import PaginationDefaults
+from app.core.constants import PaginationDefaults, Permission
 from app.core.responses import SuccessResponse
 from app.modules.auth.dependencies import CurrentUserDep, require_permissions
-from app.core.constants import Permission
 from app.modules.users.schemas import UserResponse, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["Users"])

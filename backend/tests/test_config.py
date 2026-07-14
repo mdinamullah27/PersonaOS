@@ -5,7 +5,7 @@ Tests Pydantic Settings configuration and validation.
 
 import pytest
 
-from app.core.config import Settings, get_settings
+from app.core.config import get_settings
 
 
 @pytest.mark.unit

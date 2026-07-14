@@ -9,13 +9,12 @@ from fastapi import Depends, Header
 from pydantic import BaseModel
 
 from app.core.constants import Permission, UserRole
-from app.core.exceptions import UnauthorizedException
 from app.core.security import decode_token
+from app.modules.auth.constants import AUTH_HEADER_NAME, AUTH_HEADER_PREFIX
 from app.modules.auth.exceptions import (
     InsufficientPermissionsError,
     InvalidTokenError,
 )
-from app.modules.auth.constants import AUTH_HEADER_NAME, AUTH_HEADER_PREFIX
 
 
 class CurrentUser(BaseModel):
@@ -68,13 +67,17 @@ async def get_current_user(
     if not user_id:
         raise InvalidTokenError(message="Invalid token payload")
 
-    # In Phase 2, fetch user from database
-    # For now, return a mock user context
+    role_str = payload.get("role", UserRole.USER.value)
+    try:
+        role = UserRole(role_str)
+    except ValueError:
+        role = UserRole.USER
+
     return CurrentUser(
         id=user_id,
         email=payload.get("email", ""),
         username=payload.get("username", ""),
-        role=payload.get("role", UserRole.MEMBER),
+        role=role,
         is_active=payload.get("is_active", True),
     )
 
@@ -91,14 +94,6 @@ def require_permissions(*required_permissions: Permission):
 
     Returns:
         Dependency function that checks permissions.
-
-    Example:
-        @router.get("/admin")
-        async def admin_endpoint(
-            current_user: CurrentUserDep,
-            _: None = Depends(require_permissions(Permission.ADMIN_PANEL)),
-        ):
-            return {"message": "Admin access granted"}
     """
 
     async def check_permissions(
@@ -173,5 +168,5 @@ def require_role(*allowed_roles: UserRole):
 
 
 # Common role dependencies
-RequireAdmin = Depends(require_role(UserRole.SUPER_ADMIN, UserRole.ADMIN))
-RequireManager = Depends(require_role(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MANAGER))
+RequireSuperuser = Depends(require_role(UserRole.SUPERUSER))
+RequireAdmin = Depends(require_role(UserRole.SUPERUSER, UserRole.ADMIN))

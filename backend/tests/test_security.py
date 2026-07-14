@@ -36,8 +36,9 @@ class TestJWT:
 
     def test_decode_expired_token(self) -> None:
         """Test decoding an expired token raises error."""
-        import jwt
         from datetime import timedelta
+
+        import jwt
 
         token = create_access_token(
             subject="user123",

@@ -1,17 +1,16 @@
 """Authentication repository.
 
 Handles database operations for authentication.
-This is a placeholder for Phase 2 implementation.
 """
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.modules.users.models import User
 
 
 class AuthRepository:
-    """Repository for authentication-related database operations.
-
-    Provides data access methods for authentication workflows.
-    """
+    """Repository for authentication-related database operations."""
 
     def __init__(self, session: AsyncSession) -> None:
         """Initialize the repository.
@@ -21,7 +20,7 @@ class AuthRepository:
         """
         self._session = session
 
-    async def get_user_by_email(self, email: str) -> None:
+    async def get_user_by_email(self, email: str) -> User | None:
         """Get user by email address.
 
         Args:
@@ -30,10 +29,12 @@ class AuthRepository:
         Returns:
             User instance or None.
         """
-        # Phase 2: Implement database query
-        return None
+        result = await self._session.execute(
+            select(User).where(User.email == email, ~User.is_deleted)
+        )
+        return result.scalar_one_or_none()
 
-    async def get_user_by_id(self, user_id: str) -> None:
+    async def get_user_by_id(self, user_id: str) -> User | None:
         """Get user by ID.
 
         Args:
@@ -42,30 +43,7 @@ class AuthRepository:
         Returns:
             User instance or None.
         """
-        # Phase 2: Implement database query
-        return None
-
-    async def create_user(self, user_data: dict) -> None:
-        """Create a new user.
-
-        Args:
-            user_data: User data dictionary.
-
-        Returns:
-            Created user instance.
-        """
-        # Phase 2: Implement database insert
-        return None
-
-    async def update_user(self, user_id: str, user_data: dict) -> None:
-        """Update user data.
-
-        Args:
-            user_id: User ID.
-            user_data: User data to update.
-
-        Returns:
-            Updated user instance.
-        """
-        # Phase 2: Implement database update
-        return None
+        result = await self._session.execute(
+            select(User).where(User.id == user_id, ~User.is_deleted)
+        )
+        return result.scalar_one_or_none()
