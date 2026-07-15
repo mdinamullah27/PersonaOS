@@ -13,7 +13,6 @@ from app.modules.auth.exceptions import (
 )
 from app.modules.auth.repository import AuthRepository
 from app.modules.auth.schemas import (
-    LoginRequest,
     TokenResponse,
 )
 
@@ -32,11 +31,12 @@ class AuthService:
         """
         self._repository = repository
 
-    async def authenticate(self, data: LoginRequest) -> TokenResponse:
+    async def authenticate(self, email: str, password: str) -> TokenResponse:
         """Authenticate user with email and password.
 
         Args:
-            data: Login credentials.
+            email: User email address.
+            password: User password.
 
         Returns:
             TokenResponse with access token.
@@ -44,11 +44,11 @@ class AuthService:
         Raises:
             AuthenticationError: If credentials are invalid.
         """
-        user = await self._repository.get_user_by_email(data.email)
+        user = await self._repository.get_user_by_email(email)
         if not user:
             raise AuthenticationError(message="Invalid email or password")
 
-        if not verify_password(data.password, user.hashed_password):
+        if not verify_password(password, user.hashed_password):
             raise AuthenticationError(message="Invalid email or password")
 
         if not user.is_active:

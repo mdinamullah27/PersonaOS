@@ -9,7 +9,6 @@ import sys
 from typing import Any
 
 import structlog
-from fastapi import Request, Response
 
 from app.core.config import get_settings
 
@@ -64,63 +63,6 @@ def setup_logging() -> None:
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("sqlalchemy.engine").setLevel(
         logging.INFO if settings.DATABASE_ECHO else logging.WARNING
-    )
-
-
-def bind_request_logger(request: Request, logger: Any) -> Any:
-    """Bind request context to logger.
-
-    Args:
-        request: FastAPI request object.
-        logger: Structlog logger instance.
-
-    Returns:
-        Bound logger with request context.
-    """
-    return logger.bind(
-        request_id=request.state.request_id if hasattr(request.state, "request_id") else None,
-        method=request.method,
-        path=request.url.path,
-    )
-
-
-def log_request(request: Request, body: bytes | None = None) -> None:
-    """Log incoming request details.
-
-    Args:
-        request: FastAPI request object.
-        body: Request body bytes.
-    """
-    logger = structlog.get_logger("http")
-    logger.info(
-        "request_started",
-        method=request.method,
-        path=request.url.path,
-        query=str(request.query_params),
-        client=f"{request.client.host}:{request.client.port}" if request.client else None,
-        content_length=request.headers.get("content-length"),
-    )
-
-
-def log_response(
-    request: Request,
-    response: Response,
-    duration_ms: float,
-) -> None:
-    """Log response details.
-
-    Args:
-        request: FastAPI request object.
-        response: FastAPI response object.
-        duration_ms: Request processing duration in milliseconds.
-    """
-    logger = structlog.get_logger("http")
-    logger.info(
-        "request_completed",
-        method=request.method,
-        path=request.url.path,
-        status_code=response.status_code,
-        duration_ms=round(duration_ms, 2),
     )
 
 

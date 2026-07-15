@@ -10,14 +10,6 @@ APP_TITLE = "PersonaOS"
 APP_DESCRIPTION = "AI Digital Twin Platform"
 
 
-class Environment(str, Enum):
-    """Application environment types."""
-
-    DEVELOPMENT = "development"
-    STAGING = "staging"
-    PRODUCTION = "production"
-
-
 class UserRole(str, Enum):
     """User role definitions for RBAC."""
 
@@ -94,28 +86,4 @@ ROLE_PERMISSIONS: dict[UserRole, list[Permission]] = {
 }
 
 
-class HTTPHeaders(str, Enum):
-    """Common HTTP header names."""
 
-    REQUEST_ID = "X-Request-ID"
-    AUTHORIZATION = "Authorization"
-    CONTENT_TYPE = "Content-Type"
-    API_KEY = "X-API-Key"
-
-
-class CacheKeys(str, Enum):
-    """Redis cache key prefixes."""
-
-    USER = "user:"
-    WORKSPACE = "workspace:"
-    SESSION = "session:"
-    RATE_LIMIT = "rate_limit:"
-    TOKEN_BLACKLIST = "token:blacklist:"
-
-
-class PaginationDefaults(str, Enum):
-    """Default pagination values."""
-
-    PAGE = "1"
-    PAGE_SIZE = "20"
-    MAX_PAGE_SIZE = "100"

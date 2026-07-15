@@ -25,13 +25,11 @@ class SuccessResponse(BaseModel, Generic[T]):
         success: Always True for successful responses.
         data: Response data payload.
         message: Optional success message.
-        meta: Response metadata.
     """
 
     success: bool = True
     data: T | None = None
     message: str | None = None
-    meta: ResponseMeta = Field(default_factory=ResponseMeta)
 
 
 class ErrorResponse(BaseModel):

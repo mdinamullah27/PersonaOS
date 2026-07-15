@@ -3,14 +3,7 @@
 Pydantic models for authentication requests and responses.
 """
 
-from pydantic import BaseModel, EmailStr, Field
-
-
-class LoginRequest(BaseModel):
-    """Login request schema."""
-
-    email: EmailStr = Field(..., description="User email address")
-    password: str = Field(..., min_length=8, description="User password")
+from pydantic import BaseModel, Field
 
 
 class TokenResponse(BaseModel):

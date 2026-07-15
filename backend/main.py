@@ -7,7 +7,6 @@ from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer
 
 from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
@@ -20,12 +19,6 @@ from app.core.middleware import (
 )
 
 settings = get_settings()
-
-# OAuth2 scheme for Swagger UI login flow
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_PREFIX}/auth/login",
-    auto_error=False,
-)
 
 
 def create_app() -> FastAPI:
